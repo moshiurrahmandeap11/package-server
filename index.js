@@ -30,7 +30,7 @@ const client = new MongoClient(uri, {
 
 async function main() {
   try {
-    await client.connect();
+    // await client.connect();
     console.log("MongoDB connected");
 
     const dbs = {
@@ -44,6 +44,9 @@ async function main() {
       cancel: client
         .db("packageOrderCancelDB")
         .collection("packageOrderCancel"),
+      grid: client.db("PackageGridDB").collection("packageGrid"),
+      grid2: client.db("PackageGridDB2").collection("packageGrid2"),
+      grid3: client.db("PackageGridDB3").collection("packageGrid3"),
     };
 
     // Helper async handler to reduce try/catch boilerplate
@@ -221,7 +224,7 @@ async function main() {
       })
     );
 
-    // CANCEL ORDERS  
+    // CANCEL ORDERS
     app.get(
       "/cancel-orders",
       asyncHandler(async (req, res) => {
@@ -248,6 +251,63 @@ async function main() {
         res
           .status(201)
           .json({ message: "Order Cancelled successfully", result });
+      })
+    );
+
+    // package grid
+
+    app.get(
+      "/grid",
+      asyncHandler(async (req, res) => {
+        const result = await dbs.grid.find().toArray();
+        res.send(result);
+      })
+    );
+
+    app.post(
+      "/grid",
+      asyncHandler(async (req, res) => {
+        const newGrid = req.body;
+        const result = await dbs.grid.insertOne(newGrid);
+        res.send(result);
+      })
+    );
+
+    // package grid 1
+
+    app.get(
+      "/grid1",
+      asyncHandler(async (req, res) => {
+        const result = await dbs.grid2.find().toArray();
+        res.send(result);
+      })
+    );
+
+    app.post(
+      "/grid1",
+      asyncHandler(async (req, res) => {
+        const newGrid2 = req.body;
+        const result = await dbs.grid2.insertOne(newGrid2);
+        res.send(result);
+      })
+    );
+
+    // package grid 2
+
+    app.get(
+      "/grid2",
+      asyncHandler(async (req, res) => {
+        const result = await dbs.grid3.find().toArray();
+        res.send(result);
+      })
+    );
+
+    app.post(
+      "/grid2",
+      asyncHandler(async (req, res) => {
+        const newGrid3 = req.body;
+        const result = await dbs.grid3.insertOne(newGrid3);
+        res.send(result);
       })
     );
 
